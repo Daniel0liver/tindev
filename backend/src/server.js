@@ -1,5 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors'); // (yarn add cors) Permite que a api seja acessada por qualquer endereço
+
 const routes = require('./routes');
 
 const server = express();
@@ -8,6 +10,7 @@ mongoose.connect('mongodb+srv://omnistack:daniel1812@cluster0-f7unl.mongodb.net/
   useNewUrlParser: true
 });
 
+server.use(cors());
 server.use(express.json());
 server.use(routes);
 
