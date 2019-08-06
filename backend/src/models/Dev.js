@@ -10,10 +10,18 @@ const DevSchema = new Schema({ //Schema do Dev (Estrutura da tabela no banco de 
     required: true,
   },
   bio: String,
-  avatar: {
+  avatar: { 
     type: String,
     required: true,
   },
+  likes: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Dev',
+  }],
+  dislikes: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Dev',
+  }],
 }, {
   timestamps: true, // cria coluna CreatedAt(armazena automaticamente a data de criação de um registro) e updatedAt(armazena a data da ultima atualização no registro)
 });
