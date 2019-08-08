@@ -1,14 +1,23 @@
 import React, { useState } from 'react';
 import './Login.css'
 
-import  logo from '../assets/logo.svg'
+import api from '../services/api';
+
+import logo from '../assets/logo.svg'
 
 export default function Login({ history }) {
   const [username, setUsername] = useState(''); // useState retorna dois valores: username e um função
   
-  function HandSubmit(e){
+  async function HandSubmit(e){
     e.preventDefault(); // Bloqueia o eventDefault(Redirecionar para outra pagina) de um form
-    history.push('/main')
+    
+    const response = await api.post('/devs', {
+      username,
+    });
+
+    const { _id } = response.data;
+    
+    history.push(`/dev/${_id}`);
     
   }
 
