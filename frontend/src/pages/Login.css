@@ -1,6 +1,7 @@
 .login-container {
   height: 100%;
   display: flex;
+  flex-wrap: wrap;
   justify-content: center; /* Alinha o item horizontalmente ao centro */
   align-content: center; /*Alinha o item verticalmente ao centro */
 }
