@@ -19,14 +19,26 @@ module.exports = {
 
   async store(req, res){
     const { username } = req.body;
-
+    const { user } = req.headers;
+    
+    
     const userExists = await Dev.findOne({ user: username });
     // Validando se o usuário ja existe na base de dados
     if(userExists){
       return res.json(userExists);
     }
+
+    const loggedDev = await Dev.findById(user);
+    // Validando se o usuário existe no github
+    if(!loggedDev) {
+      return res.status(404).json({ error: 'Dev not exist' });
+    }
+
     // Pegando os dados dos usuários na api do github atraves do username
     const response = await axios.get(`https://api.github.com/users/${username}`);
+
+    console.log(response);
+    
 
     const { name, bio, avatar_url: avatar } = response.data;
 
