@@ -25,14 +25,14 @@ export default function Login({ history }) {
     <div className="login-container">
       <div className="login-content">
         <form onSubmit={HandSubmit}>
-          <img src={logo} alt="Tindev" />
-          <div class="ui left icon input">
+          <img src={logo} alt="Tindev" /> 
+          <div className="ui left icon input">
             <input
               placeholder="Usuário GitHub"
               value={username}
               onChange={e => setUsername(e.target.value)} // onChange returna um event 
             />
-            <i aria-hidden="true" class="users icon"></i>
+            <i aria-hidden="true" className="users icon"></i>
           </div>
 
           <button type="submit">Enviar</button>
