@@ -14,8 +14,16 @@ export default function Login({ history }) {
     const response = await api.post('/devs', {
       username,
     });
+    
+    if(!response){
+      console.log('Não foi possivel fazer o login');
+    }
 
     const { _id } = response.data;
+
+    if(!_id){
+      alert('Não foi possivel fazer o login');
+    }
 
     history.push(`/dev/${_id}`);
 
@@ -25,7 +33,7 @@ export default function Login({ history }) {
     <div className="login-container">
       <div className="login-content">
         <form onSubmit={HandSubmit}>
-          <img src={logo} alt="Tindev" /> 
+          <img src={logo} alt="Tindev" />
           <div className="ui left icon input">
             <input
               placeholder="Usuário GitHub"
