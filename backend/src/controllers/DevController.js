@@ -21,11 +21,11 @@ module.exports = {
     const { username } = req.body;
     const { user } = req.headers;
     
-    const loggedDev = await Dev.findById(user);
+    // const loggedDev = await Dev.findById(user);
     // Validando se o usuário existe no github
-    if(!loggedDev) {
-      return res.json({ error: 'Dev not exist' });
-    }
+    // if(!loggedDev) {
+    //   return res.json({ error: 'Dev not exist' });
+    // }
     
     const userExists = await Dev.findOne({ user: username });
     // Validando se o usuário ja existe na base de dados
