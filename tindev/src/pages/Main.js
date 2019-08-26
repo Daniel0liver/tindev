@@ -1,48 +1,89 @@
-import React from 'react'
+import React , { useEffect, useState } from 'react';
+import AsyncStorage from '@react-native-community/async-storage';
 import { SafeAreaView, Image, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+
+import api from '../services/api';
 
 import logo from '../assets/logo.png';
 import dislike from '../assets/dislike.png';
 import like from '../assets/like.png';
 
-export default function Main() {
+export default function Main({ navigation }) {
+  const id = navigation.getParam('user');
+  const [users, setUsers] = useState([]);
+
+  //useEffect é uma função que será exucutado quando meu component for renderizado em tela
+  useEffect(() => {
+    async function loadUsers() {
+      const response = await api.get('/devs', {
+        headers: {
+          user: id,
+        }
+      })
+
+      setUsers(response.data);
+
+    }
+
+    loadUsers();
+  }, [id]); // Recebe dois parametros: uma função e quando você quer executar essa função
+
+  async function handleLike() {
+    const [user, ... rest] = users;
+
+    await api.post(`/devs/${user._id}/likes`, null, {
+      headers: { user: id },
+    })
+    setUsers(rest);
+  }
+
+  async function handleDislike() {
+    const [user, ... rest] = users;
+    await api.post(`/devs/${user._id}/dislikes`, null, {
+      headers: { user: id },
+    }) // Segundo parametro de um metodo POST é o header(Corpo)
+    // Nunca deve alterar diretamente a users, mesmo ela sendo um array, temos que alterar pela função setUsers
+    setUsers(rest); // Filtrando usuarios que tenham id diferentes aqueles usuarios que receberam dislike
+
+  }
+
+  async function handlerLogout(){
+    await AsyncStorage.clear();
+
+    navigation.navigate('Login');
+  }
+
   return (
     <SafeAreaView style={styles.container}>
-      <Image style={styles.logo} source={logo} />
+      <TouchableOpacity onPress={handlerLogout}> 
+        <Image style={styles.logo} source={logo} />
+      </TouchableOpacity>
 
       <View style={styles.cardsContainer}>
-        <View style={[styles.card, { zIndex: 3 }]}>
-          <Image style={styles.avatar} source={{uri: 'https://avatars2.githubusercontent.com/u/2254731?v=4'}} />
-          <View style={styles.footer}> 
-            <Text style={styles.name}>Daniel Oliveira</Text>
-            <Text style={styles.bio} numberOfLines={3}>CTO na @Rocketseat. Apaixonado por Javascript, ReactJS, React Native, NodeJS e todo ecossistema em torno dessas tecnologias.</Text>
-          </View>
-        </View>
-
-        <View style={[styles.card, { zIndex: 2 }]}>
-          <Image style={styles.avatar} source={{uri: 'https://avatars2.githubusercontent.com/u/2254731?v=4'}} />
-          <View style={styles.footer}> 
-            <Text style={styles.name}>Daniel Oliveira</Text>
-            <Text style={styles.bio} numberOfLines={3}>CTO na @Rocketseat. Apaixonado por Javascript, ReactJS, React Native, NodeJS e todo ecossistema em torno dessas tecnologias.</Text>
-          </View>
-        </View>
-
-        <View style={[styles.card, { zIndex: 1 }]}>
-          <Image style={styles.avatar} source={{uri: 'https://avatars2.githubusercontent.com/u/2254731?v=4'}} />
-          <View style={styles.footer}> 
-            <Text style={styles.name}>Daniel Oliveira</Text>
-            <Text style={styles.bio} numberOfLines={3}>CTO na @Rocketseat. Apaixonado por Javascript, ReactJS, React Native, NodeJS e todo ecossistema em torno dessas tecnologias.</Text>
-          </View>
-        </View>
+        { users.length === 0
+         ? <Text style={styles.empty}>Você já viu todos os usuários :(</Text>
+         :(
+          users.map((user, index) => (
+            <View key={user.id} style={[styles.card, { zIndex: users.length - index }]}>
+              <Image style={styles.avatar} source={{uri: user.avatar }} />
+              <View style={styles.footer}> 
+                <Text style={styles.name}>{ user.name }</Text>
+                <Text style={styles.bio} numberOfLines={3}>{ user.bio }</Text>
+              </View>
+            </View>
+          ))
+         )}
       </View>
-      <View style={styles.buttonsContainer}>
-        <TouchableOpacity style={styles.button}>
-          <Image source={dislike} />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button}>
-          <Image source={like} />
-        </TouchableOpacity> 
-      </View>
+      { users.length > 0 && (
+        <View style={styles.buttonsContainer}>
+          <TouchableOpacity style={styles.button} onPress={handleDislike}>
+            <Image source={dislike} />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={handleLike}>
+            <Image source={like} />
+          </TouchableOpacity> 
+        </View>
+      )}
     </SafeAreaView>
   );
 }
@@ -64,6 +105,13 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     justifyContent: 'center',
     maxHeight: 500,
+  },
+
+  empty: {
+    alignSelf: 'center',
+    color: '#999',
+    fontSize: 24,
+    fontWeight: 'bold',
   },
 
   card: {
@@ -107,7 +155,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginBottom: 30,
   },
-
+ 
   button: {
     width: 50,
     height: 50,
