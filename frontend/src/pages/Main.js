@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import io from 'socket.io-client';
 import { Link } from 'react-router-dom';
 import './Main.css';
 
@@ -7,9 +8,11 @@ import api from '../services/api';
 import logo from '../assets/logo.svg';
 import dislike from '../assets/dislike.svg';
 import like from '../assets/like.svg';
+import itsamatch from '../assets/itsamatch.png';
 
 export default function ({ match }) { // A propriedade match pega todos os parametros passados para aquela rota
   const [users, setUsers] = useState([]);
+  const [matchDev, setMtachDev] = useState(true);
 
   //useEffect é uma função que será exucutado quando meu component for renderizado em tela
   useEffect(() => {
@@ -26,6 +29,17 @@ export default function ({ match }) { // A propriedade match pega todos os param
 
     loadUsers();
   }, [match.params.id]); // Recebe dois parametros: uma função e quando você quer executar essa função
+
+  useEffect(() => {
+    const socket = io('http://localhost:3333', {
+      query: { user : match.params.id }
+    });
+
+    socket.on('match', message => {
+      console.log(message);
+    })
+  }, [match.params.id]);
+
 
   async function handleLike(id) {
     await api.post(`/devs/${id}/likes`, null, {
@@ -48,15 +62,18 @@ export default function ({ match }) { // A propriedade match pega todos os param
       <Link to="/">
         <img src={logo} alt="Tindev" />
       </Link>
+
       {users.length > 0 ? (
         <ul>
           {users.map(user => (
             <li key={user._id}>
-              <img src={user.avatar} alt="" />
-              <footer>
-                <strong>{user.name}</strong>
-                <p>{user.bio}</p>
-              </footer>
+              <div className="cards">
+                <img src={user.avatar} alt="" />
+                <footer>
+                  <strong>{user.name}</strong>
+                  <p>{user.bio}</p>
+                </footer>
+              </div>
               <div className="buttons">
                 <button type="button" onClick={() => handleDislike(user._id)}> {/* Quando colocamos os parenteses na função, ao executar o onClick ele ira executar a função, não vai passar a referencia da função. Para isso usamos um hacker que é declarar uma nova função antes () => assim ele vai passar a referencia da função*/}
                   <img src={dislike} alt="Dislike" />
@@ -71,6 +88,17 @@ export default function ({ match }) { // A propriedade match pega todos os param
       ) : (
           <div className="empty">Acabou :(</div>
         )}
+
+      { matchDev && (
+        <div className="match-container">
+          <img src={itsamatch}/>
+          <img className="avatar" src="https://avatars0.githubusercontent.com/u/4248081?v=4" />
+          <strong>Daniel de Oliveira</strong>
+          <p>Nothing better than good coffee to solve user problems. computer science students - IFCE Maracanaú.</p>
+        
+          <button type="button" onClick={() => setMtachDev(null)}>FECHAR</button>
+        </div>
+      )}
     </div>
   );
 }

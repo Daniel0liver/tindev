@@ -18,6 +18,17 @@
   flex-direction: column;
 }
 
+.main-container ul li .cards{
+  flex: 1;
+  background: #fff;
+}
+
+.main-container ul li .cards:hover{
+  transform: scale(1.02);
+  transition: 0.2s;
+  box-shadow: 5px 5px 11px #dedede;
+}
+
 .main-container ul li img {
   max-width: 100%;
 }
@@ -25,7 +36,6 @@
 .main-container ul li footer {
   flex: 1;
   background: #fff;
-  border: 1px solid #eee;
   padding: 15px 20px;
   text-align: left;
   border-radius: 0 0 5px 5px;
@@ -69,4 +79,56 @@
   color: #999;
   font-weight: bold;
   margin-top: 300px;
+}
+
+.match-container {
+  position: absolute;
+  top: 0;
+  padding-top: 8%;
+  padding-bottom: 10%;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: grid;
+  flex-direction: column;
+  justify-content: center;
+  justify-items: center;
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.match-container img {
+  width: 230px;
+}
+
+.match-container .avatar{
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  border: solid 5px #fff;
+  margin: 30px 0;
+}
+
+.match-container strong{
+  font-size: 23 px;
+  color: #fff;
+}
+
+.match-container p {
+  margin-top: 10px;
+  font-size: 17px;
+  line-height: 30px;
+  max-width: 400px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.match-container button {
+  border: solid 1px rgba(255, 255, 255, 0.8);
+  padding: 10px 33px;
+  background: none;
+  font-weight: bold;
+  font-family: Arial, Helvetica, sans-serif;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 16px;
+  margin-top: 30px;
+  cursor: pointer;
 }
