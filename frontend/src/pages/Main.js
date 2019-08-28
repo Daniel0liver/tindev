@@ -12,7 +12,7 @@ import itsamatch from '../assets/itsamatch.png';
 
 export default function ({ match }) { // A propriedade match pega todos os parametros passados para aquela rota
   const [users, setUsers] = useState([]);
-  const [matchDev, setMtachDev] = useState(true);
+  const [matchDev, setMtachDev] = useState(null);
 
   //useEffect é uma função que será exucutado quando meu component for renderizado em tela
   useEffect(() => {
@@ -35,8 +35,8 @@ export default function ({ match }) { // A propriedade match pega todos os param
       query: { user : match.params.id }
     });
 
-    socket.on('match', message => {
-      console.log(message);
+    socket.on('match', dev => {
+      setMtachDev(dev);
     })
   }, [match.params.id]);
 
@@ -58,47 +58,66 @@ export default function ({ match }) { // A propriedade match pega todos os param
   }
 
   return (
-    <div className="main-container">
-      <Link to="/">
-        <img src={logo} alt="Tindev" />
-      </Link>
-
-      {users.length > 0 ? (
+    <div>
+      <div className="menu">
         <ul>
-          {users.map(user => (
-            <li key={user._id}>
-              <div className="cards">
-                <img src={user.avatar} alt="" />
-                <footer>
-                  <strong>{user.name}</strong>
-                  <p>{user.bio}</p>
-                </footer>
-              </div>
-              <div className="buttons">
-                <button type="button" onClick={() => handleDislike(user._id)}> {/* Quando colocamos os parenteses na função, ao executar o onClick ele ira executar a função, não vai passar a referencia da função. Para isso usamos um hacker que é declarar uma nova função antes () => assim ele vai passar a referencia da função*/}
-                  <img src={dislike} alt="Dislike" />
-                </button>
-                <button type="button" onClick={() => handleLike(user._id)}>
-                  <img src={like} alt="Like" />
-                </button>
-              </div>
-            </li>
-          ))}
+          <li className="user-icon">
+            <span className="border-effect" />
+            <div className="content">
+              <img src="https://avatars0.githubusercontent.com/u/4248081?v=4" />
+              <strong>Filipe Deschamps</strong>
+            </div>
+          </li>
+          <li className="left">
+            <Link to="/">
+              <strong>Sign out</strong>
+              <i class="fas fa-sign-in-alt"></i>
+            </Link>
+          </li>
         </ul>
-      ) : (
-          <div className="empty">Acabou :(</div>
-        )}
+      </div>
+      <div className="main-container">
+        <Link to="/">
+          <img src={logo} alt="Tindev" />
+        </Link>
 
-      { matchDev && (
-        <div className="match-container">
-          <img src={itsamatch}/>
-          <img className="avatar" src="https://avatars0.githubusercontent.com/u/4248081?v=4" />
-          <strong>Daniel de Oliveira</strong>
-          <p>Nothing better than good coffee to solve user problems. computer science students - IFCE Maracanaú.</p>
-        
-          <button type="button" onClick={() => setMtachDev(null)}>FECHAR</button>
-        </div>
-      )}
+        {users.length > 0 ? (
+          <ul>
+            {users.map(user => (
+              <li key={user._id}>
+                <div className="cards">
+                  <img src={user.avatar} alt="" />
+                  <footer>
+                    <strong>{user.name}</strong>
+                    <p>{user.bio}</p>
+                  </footer>
+                </div>
+                <div className="buttons">
+                  <button type="button" onClick={() => handleDislike(user._id)}> {/* Quando colocamos os parenteses na função, ao executar o onClick ele ira executar a função, não vai passar a referencia da função. Para isso usamos um hacker que é declarar uma nova função antes () => assim ele vai passar a referencia da função*/}
+                    <img src={dislike} alt="Dislike" />
+                  </button>
+                  <button type="button" onClick={() => handleLike(user._id)}>
+                    <img src={like} alt="Like" />
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        ) : (
+            <div className="empty">Acabou :(</div>
+          )}
+
+        { matchDev && (
+          <div className="match-container">
+            <img src={itsamatch}/>
+            <img className="avatar" src={matchDev.avatar} />
+            <strong> {matchDev.name} </strong>
+            <p>{matchDev.bio}</p>
+          
+            <button type="button" onClick={() => setMtachDev(null)}>FECHAR</button>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
