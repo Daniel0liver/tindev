@@ -23,7 +23,7 @@
     "@react-native-community/eslint-config": "^0.0.3",
     "add": "^2.0.6",
     "babel-jest": "^24.1.0",
-    "jest": "^24.1.0",
+    "jest": "^29.6.1",
     "jetifier": "^1.6.4",
     "metro-react-native-babel-preset": "0.54.1",
     "or": "^0.2.0",
